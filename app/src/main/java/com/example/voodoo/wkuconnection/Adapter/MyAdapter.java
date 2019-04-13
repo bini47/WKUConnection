@@ -19,12 +19,14 @@ import android.widget.Toast;
 
 import com.example.voodoo.wkuconnection.Interface.ItemClickListner;
 import com.example.voodoo.wkuconnection.MainActivity;
+import com.example.voodoo.wkuconnection.Model.Item;
 import com.example.voodoo.wkuconnection.Model.RssObject;
 import com.example.voodoo.wkuconnection.PageViewer;
 import com.example.voodoo.wkuconnection.R;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -70,7 +72,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
 
-    private RssObject rssObject;
+    private List<Item> Item;
     private Context mcontext;
     private LayoutInflater inflater;
 
@@ -89,13 +91,15 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
     //DatabseHelper mydb;
 
 
-    public MyAdapter(RssObject rssObject, Context mcontext) {
-        this.rssObject = rssObject;
+    public MyAdapter(List<Item> rssObject, Context mcontext) {
+        this.Item = rssObject;
         this.mcontext = mcontext;
         inflater = LayoutInflater.from(mcontext);
 
 
     }
+
+
 
     @Override
     public AdapteHOlder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -119,8 +123,8 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
 
          db.execSQL("DELETE from articles");
            Log.i("deleted", "deleted succesfully");*//*
-      Log.i("size" ,String.valueOf(rssObject.getItems().size()));
-       for (int i = 0; i < rssObject.getItems().size(); i++) {
+      Log.i("size" ,String.valueOf(Item.size()));
+       for (int i = 0; i < Item.size(); i++) {
 
             titles.clear();
             pubdates.clear();
@@ -128,20 +132,20 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
             urls.clear();
             tags.clear();
 
-            titles.add( rssObject.getItems().get(i).getTitle());
-            pubdates.add(rssObject.getItems().get(i).getPubDate());
-            contents.add(rssObject.getItems().get(i).getContent());
-            urls.add(rssObject.getItems().get(i).getLink());
-            tags.add(rssObject.getItems().get(i).getCategories().get(0));
+            titles.add( Item.get(i).getTitle());
+            pubdates.add(Item.get(i).getPubDate());
+            contents.add(Item.get(i).getContent());
+            urls.add(Item.get(i).getLink());
+            tags.add(Item.get(i).getCategories().get(0));
 
            *//* String query= ("INSERT INTO articles (title,pubdate,content,url,catagory) VALUES(?,?,?,?,?)");
             SQLiteStatement statement= db.compileStatement(query);
 
-            statement.bindString(1, rssObject.getItems().get(i).getTitle());
-            statement.bindString(2, rssObject.getItems().get(i).getPubDate());
-            statement.bindString(3,  rssObject.getItems().get(i).getContent());
-            statement.bindString(4, rssObject.getItems().get(i).getLink());
-            statement.bindString(5, "tag"*//**//*rssObject.getItems().get(i).getCategories().get(0)*//**//*);
+            statement.bindString(1, Item.get(i).getTitle());
+            statement.bindString(2, Item.get(i).getPubDate());
+            statement.bindString(3,  Item.get(i).getContent());
+            statement.bindString(4, Item.get(i).getLink());
+            statement.bindString(5, "tag"*//**//*Item.get(i).getCategories().get(0)*//**//*);
             Log.i("inserted","inserted");
             Log.i("tags i", titles.toString());
 *//*
@@ -153,16 +157,12 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
     public void onBindViewHolder(AdapteHOlder holder, int position) {
 
 
-        String tags=rssObject.getItems().get(position).getCategories().get(0);
-        holder.title.setText(rssObject.getItems().get(position).getTitle());
-        holder.pubdate.setText(rssObject.getItems().get(position).getPubDate());
-        holder.tags.setText(rssObject.getItems().get(position).getCategories().get(0));
-
+        holder.title.setText(Item.get(position).getTitle());
+        holder.pubdate.setText(Item.get(position).getDate_published());
+         holder.tags.setText("tags");
         //holder.tags.setTextColor(ContextCompat.getColor(mcontext, R.color.colorAccent));
-
-        holder.content.setText(rssObject.getItems().get(position).getContent().replace("<p>", "")
+        holder.content.setText(Item.get(position).getContent_html().replace("<p>", "")
                 .replace("</p>", ""));
-
 
         holder.setItemClickListner(new ItemClickListner() {
 
@@ -170,8 +170,8 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
             public void onClick(View view, int position, boolean isLongClick) {
                 if (!isLongClick) {
 
-                    String title=rssObject.getItems().get(position).getTitle();
-                    String url=rssObject.getItems().get(position).getLink();
+                    String title=Item.get(position).getTitle();
+                    String url=Item.get(position).getUrl();
 
                     Intent pageviewr = new Intent(mcontext.getApplicationContext(), PageViewer.class);
                     pageviewr.putExtra("urlLink", url);
@@ -179,8 +179,9 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
                     pageviewr.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     mcontext.startActivity(pageviewr);
 
-                    Log.i("rss", rssObject.getItems().get(position).getLink());
-                   //Log.i("rssurl", urls.get(position));
+                    Log.i("rss", Item.get(position).getUrl());
+
+
 
                 }
             }
@@ -265,7 +266,7 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
 
             }
         }*/
-            return rssObject.items.size();
+            return Item.size();
 
         }
 

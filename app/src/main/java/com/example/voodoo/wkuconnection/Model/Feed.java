@@ -1,8 +1,11 @@
+/*
 package com.example.voodoo.wkuconnection.Model;
 
+*/
 /**
  * Created by voodoo on 11/10/2017.
- */
+ *//*
+
 
 public class Feed
 {
@@ -70,3 +73,4 @@ public class Feed
         this.image = image;
     }
 }
+*/

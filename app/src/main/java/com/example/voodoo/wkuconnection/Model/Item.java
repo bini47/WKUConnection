@@ -5,31 +5,34 @@ import java.util.List;
 /**
  * Created by voodoo on 11/10/2017.
  */
-
+import java.util.*;
+import com.fasterxml.jackson.annotation.*;
 public class Item
 {
-    public String title;
-    public String pubDate ;
-    public String link;
-    public String guid ;
-    public String author ;
-    public String thumbnail;
-    public String description;
-    public String content;
-    public List<Object> enclosure;
-    public List<String> categories;
+    public String id ;
+    public String url ;
+    public String title ;
+    public String content_html ;
+    public String content_text ;
+    public String date_published ;
+    public String date_modified ;
+    public Author author ;
+    public List<String> tags ;
 
-    public Item(String title, String pubDate, String link, String guid, String author, String thumbnail, String description, String content, List<Object> enclosure, List<String> categories) {
-        this.title = title;
-        this.pubDate = pubDate;
-        this.link = link;
-        this.guid = guid;
-        this.author = author;
-        this.thumbnail = thumbnail;
-        this.description = description;
-        this.content = content;
-        this.enclosure = enclosure;
-        this.categories = categories;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getTitle() {
@@ -40,75 +43,63 @@ public class Item
         this.title = title;
     }
 
-    public String getPubDate() {
-        return pubDate;
+    public String getContent_html() {
+        return content_html;
     }
 
-    public void setPubDate(String pubDate) {
-        this.pubDate = pubDate;
+    public void setContent_html(String content_html) {
+        this.content_html = content_html;
     }
 
-    public String getLink() {
-        return link;
+    public String getContent_text() {
+        return content_text;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setContent_text(String content_text) {
+        this.content_text = content_text;
     }
 
-    public String getGuid() {
-        return guid;
+    public String getDate_published() {
+        return date_published;
     }
 
-    public void setGuid(String guid) {
-        this.guid = guid;
+    public void setDate_published(String date_published) {
+        this.date_published = date_published;
     }
 
-    public String getAuthor() {
+    public String getDate_modified() {
+        return date_modified;
+    }
+
+    public void setDate_modified(String date_modified) {
+        this.date_modified = date_modified;
+    }
+
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 
-    public String getThumbnail() {
-        return thumbnail;
+    public List<String> getTags() {
+        return tags;
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public List<Object> getEnclosure() {
-        return enclosure;
-    }
-
-    public void setEnclosure(List<Object> enclosure) {
-        this.enclosure = enclosure;
-    }
-
-    public List<String> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<String> categories) {
-        this.categories = categories;
+    public Item(String id, String url, String title, String content_html, String content_text, String date_published, String date_modified, Author author, List<String> tags) {
+        this.id = id;
+        this.url = url;
+        this.title = title;
+        this.content_html = content_html;
+        this.content_text = content_text;
+        this.date_published = date_published;
+        this.date_modified = date_modified;
+        this.author = author;
+        this.tags = tags;
     }
 }

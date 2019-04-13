@@ -25,8 +25,11 @@ import android.widget.Toast;
 
 import com.example.voodoo.wkuconnection.Adapter.ArrayAdapterFactory;
 import com.example.voodoo.wkuconnection.Adapter.MyAdapter;
+import com.example.voodoo.wkuconnection.Model.Item;
 import com.example.voodoo.wkuconnection.Model.RssObject;
 
+import com.example.voodoo.wkuconnection.Retrofit.NewsApi;
+import com.example.voodoo.wkuconnection.common.Common;
 import com.example.voodoo.wkuconnection.common.HttpHandler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,6 +37,15 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,12 +53,18 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RssObject rssObject;
     SwipeRefreshLayout pullTorefresh;
-
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    NewsApi newsApi;
+    @Override
+    protected void onStop() {
+        compositeDisposable.clear();
+        super.onStop();
+    }
 
     public static Context context;
 
-    private final String RSS_link="http://wku-connection.000webhostapp.com/feed";
-    private final String RSS_link_json="https://api.rss2json.com/v1/api.json?rss_url=";
+
+    private final String RSS_link_json="https://feed2json.org/convert?url=https%3A%2F%2Fet-news.000webhostapp.com%2Ffeed";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         pullTorefresh=(SwipeRefreshLayout)findViewById(R.id.pullToRefresh);
 
         context=this;
-
+        newsApi= Common.getApi();
         //pull to refresh
         pullTorefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -105,51 +123,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadurl() {
 
-        @SuppressLint("StaticFieldLeak") AsyncTask<String,String,String> loadnews= new AsyncTask<String, String, String>() {
-
-            ProgressDialog mdialog= new ProgressDialog(MainActivity.this);
-
-
+        Call<RssObject> call = newsApi.fetchNews();
+        call.enqueue(new Callback<RssObject>() {
             @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                mdialog.setMessage("please wait...");
-                mdialog.show();
-                //toolbar.setTitle("updating....");
-
+            public void onResponse(Call<RssObject> call, Response<RssObject> response) {
+                displayNews(response.body().getItems());
             }
 
             @Override
-            protected String doInBackground(String... strings) {
-
-                String result;
-                HttpHandler http= new HttpHandler();
-                result= http.GetHttpData(strings[0]);
-                return result;
+            public void onFailure(Call<RssObject> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "error while loading data", Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                mdialog.dismiss();
-                //toolbar.setTitle("WKU-Connection");
-                //
-
-                Gson gson=new GsonBuilder().registerTypeAdapterFactory(new ArrayAdapterFactory()).create();
-
-               RssObject rssObject = gson.fromJson(s,RssObject.class);
-                MyAdapter adapter = new MyAdapter(rssObject,getBaseContext());
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-
-            }
-        };
-        StringBuilder get_url_result= new StringBuilder(RSS_link_json);
-        get_url_result.append(RSS_link);
-        loadnews.execute(get_url_result.toString());//request
+        });
 
 
     }
+
+    private void displayNews(List<Item> items) {
+        MyAdapter adapter = new MyAdapter(items,MainActivity.this);
+        recyclerView.setAdapter(adapter);
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

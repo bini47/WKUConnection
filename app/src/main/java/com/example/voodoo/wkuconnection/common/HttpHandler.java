@@ -1,5 +1,7 @@
 package com.example.voodoo.wkuconnection.common;
 
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -36,7 +38,8 @@ public class HttpHandler {
 
 
                 }
-
+                System.out.println(steam);
+                Log.i("response", steam);
             }
         }
         catch (Exception e){
