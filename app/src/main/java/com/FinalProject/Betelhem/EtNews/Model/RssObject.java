@@ -1,4 +1,4 @@
-package com.example.voodoo.wkuconnection.Model;
+package com.FinalProject.Betelhem.EtNews.Model;
 
 import java.util.List;
 

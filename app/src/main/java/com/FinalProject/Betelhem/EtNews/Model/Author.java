@@ -1,6 +1,4 @@
-package com.example.voodoo.wkuconnection.Model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.FinalProject.Betelhem.EtNews.Model;
 
 public class Author
 {

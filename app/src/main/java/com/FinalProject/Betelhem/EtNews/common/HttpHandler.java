@@ -1,4 +1,4 @@
-package com.example.voodoo.wkuconnection.common;
+package com.FinalProject.Betelhem.EtNews.common;
 
 import android.util.Log;
 

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.voodoo.wkuconnection"
+        applicationId "com.FinalProject.Betelhem.EtNews.Retrofit"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
@@ -47,4 +47,5 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.7'
 
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'org.jetbrains:annotations-java5:15.0'
 }

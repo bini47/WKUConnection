@@ -1,12 +1,11 @@
-package com.example.voodoo.wkuconnection.Model;
+package com.FinalProject.Betelhem.EtNews.Model;
 
 import java.util.List;
 
 /**
  * Created by voodoo on 11/10/2017.
  */
-import java.util.*;
-import com.fasterxml.jackson.annotation.*;
+
 public class Item
 {
     public String id ;

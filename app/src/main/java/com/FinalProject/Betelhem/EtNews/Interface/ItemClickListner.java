@@ -1,4 +1,4 @@
-package com.example.voodoo.wkuconnection.Interface;
+package com.FinalProject.Betelhem.EtNews.Interface;
 
 import android.view.View;
 

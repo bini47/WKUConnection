@@ -1,4 +1,4 @@
-package com.example.voodoo.wkuconnection.Adapter;
+package com.FinalProject.Betelhem.EtNews.Adapter;
 
 import java.io.IOException; import java.util.ArrayList;
 import java.util.List; import com.google.gson.Gson;
@@ -20,7 +20,7 @@ public class ArrayAdapter<T> extends TypeAdapter<List<T>> {
         List<T> list = new ArrayList<T>();
 
         Gson gson = new GsonBuilder()
-        .registerTypeAdapterFactory(new com.example.voodoo.wkuconnection.Adapter.ArrayAdapterFactory())
+        .registerTypeAdapterFactory(new com.FinalProject.Betelhem.EtNews.Adapter.ArrayAdapterFactory())
                 .create(); 		if (reader.peek() == JsonToken.BEGIN_OBJECT) {
 
                     T inning = gson.fromJson(reader, adapterclass);

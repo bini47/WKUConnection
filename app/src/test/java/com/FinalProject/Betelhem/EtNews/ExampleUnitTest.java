@@ -1,4 +1,4 @@
-package com.example.voodoo.wkuconnection;
+package com.FinalProject.Betelhem.EtNews;
 
 import org.junit.Test;
 

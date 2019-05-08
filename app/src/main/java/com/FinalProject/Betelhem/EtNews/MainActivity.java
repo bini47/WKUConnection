@@ -1,60 +1,53 @@
-package com.example.voodoo.wkuconnection;
+package com.FinalProject.Betelhem.EtNews;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.voodoo.wkuconnection.Adapter.ArrayAdapterFactory;
-import com.example.voodoo.wkuconnection.Adapter.MyAdapter;
-import com.example.voodoo.wkuconnection.Model.Item;
-import com.example.voodoo.wkuconnection.Model.RssObject;
+import com.FinalProject.Betelhem.EtNews.Adapter.MyAdapter;
+import com.FinalProject.Betelhem.EtNews.Model.Item;
+import com.FinalProject.Betelhem.EtNews.Model.RssObject;
 
-import com.example.voodoo.wkuconnection.Retrofit.NewsApi;
-import com.example.voodoo.wkuconnection.common.Common;
-import com.example.voodoo.wkuconnection.common.HttpHandler;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.FinalProject.Betelhem.EtNews.Retrofit.NewsApi;
+import com.FinalProject.Betelhem.EtNews.common.Common;
+import com.FinalProject.Betelhem.EtNews.common.NewsDbHelper;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.FinalProject.Betelhem.EtNews.common.NewsContract.*;
 
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     RecyclerView recyclerView;
+    MyAdapter adapter;
     RssObject rssObject;
     SwipeRefreshLayout pullTorefresh;
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     NewsApi newsApi;
+    Common common = new Common();
+    ContentValues cv = new ContentValues();
+    private SQLiteDatabase mDatabase;
     @Override
     protected void onStop() {
         compositeDisposable.clear();
@@ -75,7 +68,13 @@ public class MainActivity extends AppCompatActivity {
         pullTorefresh=(SwipeRefreshLayout)findViewById(R.id.pullToRefresh);
 
         context=this;
+        NewsDbHelper dbHelper = new NewsDbHelper(context);
+        mDatabase=dbHelper.getWritableDatabase();
+
+        adapter = new MyAdapter(getAllNews(),this);
+
         newsApi= Common.getApi();
+
         //pull to refresh
         pullTorefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("WKU-Connection");
+        toolbar.setTitle("ET-News");
         setSupportActionBar(toolbar);
 
 
@@ -116,7 +115,12 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getBaseContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        if(isNetworkAvailable())
         loadurl();
+        else{
+            adapter.swapCursor(getAllNews());
+            displayNews();
+        }
 
 
     }
@@ -127,22 +131,54 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<RssObject>() {
             @Override
             public void onResponse(Call<RssObject> call, Response<RssObject> response) {
-                displayNews(response.body().getItems());
+                List<Item> items = response.body().getItems();
+                //ADDING LOADED DATA TO THE DATABASE
+                for (Item item:  items){
+                    cv.put(NewsEntery.COLUMN_TITlE, item.getTitle());
+                    cv.put(NewsEntery.COLUMN_DATE, item.getDate_published());
+                    cv.put(NewsEntery.COLUMN_URL, item.getUrl());
+                    try{
+                        cv.put(NewsEntery.COLUMN_TAG, item.getTags().get(0));
+                    }catch (NullPointerException e){
+                        cv.put(NewsEntery.COLUMN_TAG, "uncatagorized");
+                    }
+                    cv.put(NewsEntery.COLUMN_CONTENT, common.formatString(item.getContent_text()));
+                    cv.put(NewsEntery.COLUMN_ISREADEN, 0);
+
+                    mDatabase.insert(NewsEntery.TABLE_NAME, null, cv);
+
+                }
+
+                adapter.swapCursor(getAllNews());
+
+                displayNews();
             }
 
             @Override
             public void onFailure(Call<RssObject> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "error while loading data", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "error while loading data+ "+ t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 
 
     }
 
-    private void displayNews(List<Item> items) {
-        MyAdapter adapter = new MyAdapter(items,MainActivity.this);
+    private void displayNews() {
+          adapter = new MyAdapter(getAllNews(), context);
         recyclerView.setAdapter(adapter);
 
+    }
+    private Cursor getAllNews(){
+        return mDatabase.query(
+                NewsEntery.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+
+        );
     }
 
 
@@ -166,5 +202,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private boolean isNetworkAvailable(){
+        ConnectivityManager connectivityManager =(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo= connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo !=null && activeNetworkInfo.isConnected();
+
     }
 }

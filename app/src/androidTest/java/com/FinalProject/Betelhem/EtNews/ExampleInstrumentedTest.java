@@ -1,4 +1,4 @@
-package com.example.voodoo.wkuconnection;
+package com.FinalProject.Betelhem.EtNews;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
