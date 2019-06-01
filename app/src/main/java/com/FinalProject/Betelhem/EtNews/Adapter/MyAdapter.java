@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.FinalProject.Betelhem.EtNews.Interface.ItemClickListner;
 import com.FinalProject.Betelhem.EtNews.PageViewer;
@@ -71,7 +72,8 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
     private Cursor mCursor;
     private Context mcontext;
     private LayoutInflater inflater;
-
+    ArrayList<String> titles=new ArrayList<>();
+    ArrayList<String> urls=new ArrayList<>();
 
 
    public MyAdapter(Cursor cursor, Context mcontext) {
@@ -93,11 +95,15 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
     @Override
     public void onBindViewHolder(AdapteHOlder holder, int position) {
 
+
        if (!mCursor.moveToPosition(position)){
            return;
        }
         title = mCursor.getString(mCursor.getColumnIndex(NewsEntery.COLUMN_TITlE));
+        titles.add(mCursor.getString(mCursor.getColumnIndex(NewsEntery.COLUMN_TITlE)));
+        urls.add(mCursor.getString(mCursor.getColumnIndex(NewsEntery.COLUMN_URL)));
         url= mCursor.getString(mCursor.getColumnIndex(NewsEntery.COLUMN_URL));
+
         tags= mCursor.getString(mCursor.getColumnIndex(NewsEntery.COLUMN_TAG));
         content= mCursor.getString(mCursor.getColumnIndex(NewsEntery.COLUMN_CONTENT));
 
@@ -118,9 +124,7 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
         holder.pubdate.setText(dateFormat.format(date));
         holder.tags.setText(tags);
         holder.content.setText(content);
-        //holder.tags.setTextColor(ContextCompat.getColor(mcontext, R.color.colorAccent));
-      //  holder.content.setText(Item.get(position).getContent_html().replace("<p>", "")
-               // .replace("</p>", ""));
+
 
         holder.setItemClickListner(new ItemClickListner() {
 
@@ -129,8 +133,8 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
                 if (!isLongClick) {
 
                     Intent pageviewr = new Intent(mcontext.getApplicationContext(), PageViewer.class);
-                    pageviewr.putExtra("urlLink", url);
-                    pageviewr.putExtra("title", title);
+                    pageviewr.putExtra("urlLink", urls.get(position));
+                    pageviewr.putExtra("title", titles.get(position));
                     pageviewr.setFlags(FLAG_ACTIVITY_NEW_TASK);
                     mcontext.startActivity(pageviewr);
 
@@ -141,28 +145,24 @@ public class MyAdapter extends RecyclerView.Adapter<AdapteHOlder> {
             }
         });
 
-         if (tags.equals("Applications"))
+
+        if (tags.equals("የሀገር-ውስጥ-ዜናዎች"))
             holder.tags.setTextColor(Color.parseColor("#2196f3"));
 
-       else if (tags.equals("Automobile"))
+        else if (tags.equals("business"))
             holder.tags.setTextColor(Color.parseColor("#FF5722"));
 
-        else if (tags.equals("Business"))
+        else if (tags.equals("sport"))
             holder.tags.setTextColor(Color.parseColor("#3F51B5"));
 
-         else if (tags.equals("Envato"))
-             holder.tags.setTextColor(Color.parseColor("#00C853"));
-         else if (tags.equals("App"))
-             holder.tags.setTextColor(Color.parseColor("#4CAF50"));
+        else if (tags.equals("health"))
+            holder.tags.setTextColor(Color.parseColor("#00C853"));
+        else if (tags.equals("App"))
+            holder.tags.setTextColor(Color.parseColor("#4CAF50"));
 
-         else  if (tags.equals("Interior"))
+        else  if (tags.equals("all"))
             holder.tags.setTextColor(Color.parseColor("#6200EA"));
 
-        else if (tags.equals("Lifestyle"))
-            holder.tags.setTextColor(Color.parseColor("#00BCD4"));
-
-        else if (tags.equals("Travel"))
-            holder.tags.setTextColor(Color.parseColor("#00BFA5"));
 
         else if (tags.equals("uncatagorized"))
             holder.tags.setTextColor(Color.parseColor("#9E9E9E"));

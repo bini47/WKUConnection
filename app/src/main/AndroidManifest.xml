@@ -7,14 +7,27 @@
 
     <application
         android:allowBackup="true"
-        android:testOnly="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.FinalProject.Betelhem.EtNews.MainActivity"
+            android:name=".About"
+            android:label="@string/title_activity_about"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.FinalProject.Betelhem.EtNews.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Home"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,9 +37,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.FinalProject.Betelhem.EtNews.PageViewer"
+            android:name=".PageViewer"
             android:label="@string/title_activity_page_viewer"
-            android:parentActivityName="com.FinalProject.Betelhem.EtNews.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

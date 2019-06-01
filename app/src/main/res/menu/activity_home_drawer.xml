@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="Categories">
+        <menu>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/all"
+            android:icon="@drawable/ic_all"
+            android:title="All news" />
+        <item
+            android:id="@+id/local"
+            android:icon="@drawable/ic_local"
+            android:title="የሀገር-ውስጥ-ዜናዎች" />
+        <item
+            android:id="@+id/health"
+            android:icon="@drawable/ic_heart"
+            android:title="Health" />
+        <item
+            android:id="@+id/sport"
+            android:icon="@drawable/ic_sport"
+            android:title="Sport" />
+        <item
+            android:id="@+id/business"
+            android:icon="@drawable/ic_business"
+            android:title="Business" />
+    </group>
+        </menu>
+    </item>
+
+    <item android:title="Info">
+        <menu>
+            <item
+                android:id="@+id/login"
+                android:icon="@drawable/ic_login"
+                android:title="Login" />
+            <item
+                android:id="@+id/ad"
+                android:icon="@drawable/ic_advertise"
+                android:title="Advertise" />
+            <item
+                android:id="@+id/about"
+                android:icon="@drawable/ic_about_us"
+                android:title="About us" />
+            <item
+                android:id="@+id/contact"
+                android:icon="@drawable/ic_contat_us"
+                android:title="Contact us" />
+        
+        </menu>
+    </item>
+
+
+
+</menu>

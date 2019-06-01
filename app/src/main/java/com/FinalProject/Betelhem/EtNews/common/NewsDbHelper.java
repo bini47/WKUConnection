@@ -19,7 +19,7 @@ public class NewsDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        final  String SQL_CREATE_NEWS_TABEL = "CREATE TABLE " +
+        final  String SQL_CREATE_NEWS_TABEL = "CREATE TABLE IF NOT EXISTS " +
                 NewsEntery.TABLE_NAME + " ( " +
                 NewsEntery._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 NewsEntery.COLUMN_TITlE  + " TEXT NOT NULL, " +
@@ -37,5 +37,9 @@ public class NewsDbHelper extends SQLiteOpenHelper {
         //REMOVE THE TABLE IF IT EXIST AND RE-POPULATE IT WITH THE NEW DATA
             db.execSQL("DROP TABLE IF EXISTS "+ NewsEntery.TABLE_NAME);
             onCreate(db);
+    }
+    public void removeDb(SQLiteDatabase db){
+        db.execSQL("DROP TABLE IF EXISTS "+ NewsEntery.TABLE_NAME);
+        onCreate(db);
     }
 }
